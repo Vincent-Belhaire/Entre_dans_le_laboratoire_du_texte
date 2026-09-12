@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Writer : laboratoire du texte — une mission TICE interactive pour apprendre la mise en forme dans LibreOffice Writer en 6e.">
+  <meta name="theme-color" content="#2c2a4a">
+  <title>Writer : laboratoire du texte · TICE 6e</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232c2a4a'/%3E%3Cpath d='M17 10h23l9 9v35H17z' fill='%23fff' stroke='%23ffb627' stroke-width='4'/%3E%3Cpath d='M40 10v10h9M23 29h20M23 37h20M23 45h14' stroke='%2322b8a0' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Aller au défi</a>
+
+  <header class="site-header">
+    <button class="brand" id="homeButton" type="button" aria-label="Retour à l’accueil">
+      <span class="brand-mark" aria-hidden="true">W</span>
+      <span>Le Bureau <strong>Mystère</strong></span>
+    </button>
+    <div class="header-actions">
+      <span class="level-pill">TICE · 6e</span>
+      <button class="outline-button light" id="helpButton" type="button">? Aide</button>
+    </div>
+  </header>
+
+  <div class="mission-bar" id="missionBar" hidden>
+    <div class="mission-bar__inner">
+      <p id="stepLabel">Défi 1 sur 7</p>
+      <div class="progress-track" role="progressbar" aria-label="Progression de la mission" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <span id="progressFill"></span>
+      </div>
+      <p class="score-chip"><span aria-hidden="true">★</span> <strong id="scoreValue">0</strong> pts</p>
+    </div>
+  </div>
+
+  <main id="main">
+    <section class="screen welcome-screen is-active" id="welcome" data-screen="welcome">
+      <div class="welcome-grid">
+        <div class="welcome-copy">
+          <p class="eyebrow">MISSION TICE · SÉANCE 06</p>
+          <h1>Entre dans le laboratoire du <span>texte&nbsp;!</span></h1>
+          <p class="lede">Pixel a déréglé Writer. Sélectionne, mets en forme et aligne les textes pour réparer le rapport du labo.</p>
+          <div class="student-start" aria-label="Informations facultatives">
+            <label>Prénom <input id="startFirstName" type="text" autocomplete="given-name" placeholder="Facultatif"></label>
+            <label>Nom <input id="startLastName" type="text" autocomplete="family-name" placeholder="Facultatif"></label>
+            <label>Classe <input id="startClass" type="text" placeholder="6e …"></label>
+          </div>
+          <p class="local-note">🔒 Ces informations restent uniquement sur cet ordinateur.</p>
+          <div class="start-row">
+            <button class="primary-button" id="startButton" type="button">Commencer la mission <span aria-hidden="true">→</span></button>
+            <p><strong>55 min</strong><br><span>Seul ou en binôme</span></p>
+          </div>
+        </div>
+
+        <div class="mission-dossier" aria-label="Dossier de mission">
+          <div class="dossier-tab">CONFIDENTIEL</div>
+          <div class="dossier-paper">
+            <div class="pixel-avatar" aria-hidden="true"><span>W</span></div>
+            <p class="dossier-kicker">MESSAGE DE PIXEL</p>
+            <h2>Apprenti typographe, prêt&nbsp;?</h2>
+            <p>Observe le modèle avant d’agir. Une aide explique chaque geste et tu peux toujours corriger une erreur.</p>
+            <div class="stamp">7 DÉFIS + BONUS</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="briefing-card">
+        <div><p class="eyebrow">TON PLAN DE MISSION</p><h2>55 minutes pour dompter Writer</h2></div>
+        <ol class="timeline" aria-label="Déroulé de la séance">
+          <li><span class="time">05</span><strong>Briefing</strong><small>Découvrir la mission</small></li>
+          <li><span class="time amber">10</span><strong>Sélection</strong><small>Choisir le bon texte</small></li>
+          <li><span class="time teal">15</span><strong>Mise en forme</strong><small>Style, taille et couleur</small></li>
+          <li><span class="time purple">15</span><strong>Réparation</strong><small>Organiser le document</small></li>
+          <li><span class="time coral">10</span><strong>Final + bilan</strong><small>Reproduire et valider</small></li>
+        </ol>
+      </div>
+      <div class="resume-card" id="resumeCard" hidden>
+        <div><strong>Une mission sauvegardée a été retrouvée.</strong><br><span id="resumeText">Tu peux reprendre là où tu t’es arrêté.</span></div>
+        <div><button class="secondary-button" id="newMissionButton" type="button">Nouvelle mission</button><button class="primary-button" id="resumeButton" type="button">Reprendre →</button></div>
+      </div>
+    </section>
+
+    <!-- Défi 1 : sélection réelle par clic/glisser et Ctrl+A -->
+    <section class="screen challenge-screen" id="challenge1" data-screen="challenge1" aria-labelledby="challenge1Title">
+      <div class="challenge-heading">
+        <div><p class="eyebrow">DÉFI 01 · SÉLECTION</p><h1 id="challenge1Title">Sélectionne juste ce qu’il faut</h1></div>
+        <button class="hint-button" type="button" data-help="selection">💡 Fiche tuto</button>
+      </div>
+      <div class="instruction-card"><span class="instruction-number" id="selectionStep">1</span><div><p class="instruction-label" id="selectionLabel">MANCHE 1 · CLIQUE OU GLISSE</p><p id="selectionPrompt">Sélectionne seulement le mot demandé.</p></div></div>
+      <div class="writer-shell selection-shell" id="selectionLab" tabindex="0" aria-label="Zone de sélection de texte">
+        <div class="writer-titlebar"><span>📄 Rapport_du_labo.odt — LibreOffice Writer</span><span>— □ ×</span></div>
+        <div class="writer-menubar">Fichier　Édition　Affichage　Insertion　Format</div>
+        <div class="selection-paper" id="selectionText" aria-label="Texte à sélectionner"></div>
+        <div class="selection-legend"><span><i class="cursor-sample"></i> curseur</span><span><i class="selection-sample"></i> sélection</span></div>
+      </div>
+      <div class="feedback" id="selectionFeedback" aria-live="polite">Un clic place le curseur. Maintiens le bouton et glisse pour sélectionner plusieurs mots.</div>
+      <div class="inline-actions"><button class="secondary-button" data-retry="challenge1" type="button">↻ Recommencer l’étape</button><button class="primary-button" id="selectionValidate" type="button">Vérifier ma sélection</button></div>
+      <div class="screen-actions"><button class="secondary-button" data-action="home" type="button">Quitter</button><button class="primary-button" id="selectionNext" type="button" disabled>Défi suivant →</button></div>
+    </section>
+
+    <!-- Défi 2 : gras, italique, souligné -->
+    <section class="screen challenge-screen" id="challenge2" data-screen="challenge2" aria-labelledby="challenge2Title">
+      <div class="challenge-heading">
+        <div><p class="eyebrow">DÉFI 02 · STYLE</p><h1 id="challenge2Title">Gras, italique ou souligné&nbsp;?</h1></div>
+        <button class="hint-button" type="button" data-help="styles">💡 Fiche tuto</button>
+      </div>
+      <div class="instruction-card teal-card"><span class="instruction-number">2</span><div><p class="instruction-label">OBSERVE LA SITUATION</p><p>Choisis la mise en forme la plus adaptée. Reconnais aussi les boutons de Writer.</p></div></div>
+      <div class="quiz-arena teal-quiz">
+        <div class="quiz-top"><span class="round-pill">STYLE</span><span id="styleCount">Question 1 / 5</span></div>
+        <p class="quiz-context" id="styleContext">Dans un document scolaire…</p>
+        <h2 id="styleQuestion"></h2>
+        <div class="format-choice" id="styleAnswers" aria-label="Choix de mise en forme">
+          <button class="format-key" type="button" data-style="bold"><strong>G</strong><span>Gras</span></button>
+          <button class="format-key" type="button" data-style="italic"><em>I</em><span>Italique</span></button>
+          <button class="format-key" type="button" data-style="underline"><u>S</u><span>Souligné</span></button>
+          <button class="format-key" type="button" data-style="none">Aa<span>Aucun</span></button>
+        </div>
+      </div>
+      <div class="feedback" id="styleFeedback" aria-live="polite">Le gras attire l’attention, l’italique signale souvent un titre d’œuvre et le souligné reste rare.</div>
+      <div class="inline-actions"><button class="secondary-button" data-retry="challenge2" type="button">↻ Recommencer l’étape</button></div>
+      <div class="screen-actions"><button class="secondary-button" data-action="previous" type="button">← Retour</button><button class="primary-button" id="styleNext" type="button" disabled>Défi suivant →</button></div>
+    </section>
+
+    <!-- Défi 3 : police, taille, couleur -->
+    <section class="screen challenge-screen" id="challenge3" data-screen="challenge3" aria-labelledby="challenge3Title">
+      <div class="challenge-heading">
+        <div><p class="eyebrow">DÉFI 03 · APPARENCE</p><h1 id="challenge3Title">Taille, couleur et police</h1></div>
+        <button class="hint-button" type="button" data-help="appearance">💡 Fiche tuto</button>
+      </div>
+      <div class="instruction-card purple-card"><span class="instruction-number">3</span><div><p class="instruction-label">REPRODUIS LA MINI-CONSIGNE</p><p id="appearancePrompt">Mets le texte en Liberation Sans, 18 pt et violet.</p></div></div>
+      <div class="writer-shell">
+        <div class="writer-titlebar"><span>📄 Affiche_du_club.odt — LibreOffice Writer</span><span>— □ ×</span></div>
+        <div class="writer-toolbar" aria-label="Barre de mise en forme">
+          <label>Police<select id="fontSelect"><option>Liberation Sans</option><option>Liberation Serif</option><option>Carlito</option><option>DejaVu Sans</option></select></label>
+          <label>Taille<select id="sizeSelect"><option>12</option><option>14</option><option>18</option><option>20</option><option>24</option></select></label>
+          <label>Couleur<select id="colorSelect"><option value="ink">Noir</option><option value="purple">Violet</option><option value="blue">Bleu</option><option value="coral">Rouge</option><option value="teal">Vert</option></select></label>
+        </div>
+        <div class="writer-page compact-page"><p class="appearance-target is-selected" id="appearanceTarget">Le club des explorateurs</p></div>
+      </div>
+      <div class="criteria-strip" id="appearanceCriteria"></div>
+      <div class="feedback" id="appearanceFeedback" aria-live="polite">Modifie les trois menus, puis vérifie la consigne.</div>
+      <div class="inline-actions"><button class="secondary-button" data-retry="challenge3" type="button">↻ Recommencer l’étape</button><button class="primary-button" id="appearanceValidate" type="button">Vérifier la mise en forme</button></div>
+      <div class="screen-actions"><button class="secondary-button" data-action="previous" type="button">← Retour</button><button class="primary-button" id="appearanceNext" type="button" disabled>Défi suivant →</button></div>
+    </section>
+
+    <!-- Défi 4 : alignements -->
+    <section class="screen challenge-screen" id="challenge4" data-screen="challenge4" aria-labelledby="challenge4Title">
+      <div class="challenge-heading">
+        <div><p class="eyebrow">DÉFI 04 · ALIGNEMENT</p><h1 id="challenge4Title">Aligne-moi ça&nbsp;!</h1></div>
+        <button class="hint-button" type="button" data-help="alignment">💡 Fiche tuto</button>
+      </div>
+      <div class="instruction-card coral-card"><span class="instruction-number">4</span><div><p class="instruction-label">CLIQUE SUR LE BON BOUTON</p><p id="alignPrompt">Un titre principal doit être centré.</p></div></div>
+      <div class="alignment-lab">
+        <div class="align-models" aria-label="Exemples d’alignement">
+          <button type="button" data-align-example="left"><span>≡</span><small>Gauche</small></button>
+          <button type="button" data-align-example="center"><span>≡</span><small>Centré</small></button>
+          <button type="button" data-align-example="right"><span>≡</span><small>Droite</small></button>
+          <button type="button" data-align-example="justify"><span>≡</span><small>Justifié</small></button>
+        </div>
+        <div class="writer-shell mini-writer">
+          <div class="writer-titlebar"><span>📄 Article.odt</span><span>— □ ×</span></div>
+          <div class="alignment-toolbar" id="alignmentToolbar">
+            <button type="button" data-align="left" aria-label="Aligner à gauche">☰</button>
+            <button type="button" data-align="center" aria-label="Centrer">☰</button>
+            <button type="button" data-align="right" aria-label="Aligner à droite">☰</button>
+            <button type="button" data-align="justify" aria-label="Justifier">☰</button>
+          </div>
+          <div class="writer-page compact-page"><p id="alignTarget">Le laboratoire du texte</p></div>
+        </div>
+      </div>
+      <div class="feedback" id="alignFeedback" aria-live="polite">Regarde la longueur des lignes dans chaque icône.</div>
+      <div class="inline-actions"><button class="secondary-button" data-retry="challenge4" type="button">↻ Recommencer l’étape</button></div>
+      <div class="screen-actions"><button class="secondary-button" data-action="previous" type="button">← Retour</button><button class="primary-button" id="alignNext" type="button" disabled>Défi suivant →</button></div>
+    </section>
+
+    <!-- Défi 5 : document à réparer -->
+    <section class="screen challenge-screen wide-challenge" id="challenge5" data-screen="challenge5" aria-labelledby="challenge5Title">
+      <div class="challenge-heading">
+        <div><p class="eyebrow">DÉFI 05 · RÉPARATION</p><h1 id="challenge5Title">Répare ce document</h1></div>
+        <button class="hint-button" type="button" data-help="repair">💡 Fiche modèle</button>
+      </div>
+      <div class="repair-grid">
+        <aside class="model-card">
+          <p class="eyebrow">FICHE MODÈLE</p>
+          <h2>Le volcan mystérieux</h2>
+          <ul>
+            <li>Titre : <strong>20 pt, gras, centré</strong></li>
+            <li>Paragraphe : <strong>12 pt, justifié</strong></li>
+            <li>Mot « lave » : <strong>rouge</strong></li>
+          </ul>
+          <p class="microcopy">1. Clique le titre, le paragraphe ou le mot. 2. Utilise la barre d’outils.</p>
+        </aside>
+        <div class="writer-shell repair-editor">
+          <div class="writer-titlebar"><span>📄 Volcan.odt — à réparer</span><span>— □ ×</span></div>
+          <div class="repair-toolbar" id="repairToolbar">
+            <select data-tool="size" aria-label="Taille"><option>12</option><option>16</option><option>20</option></select>
+            <button type="button" data-tool="bold" aria-label="Gras"><strong>G</strong></button>
+            <button type="button" data-tool="center" aria-label="Centrer">≡</button>
+            <button type="button" data-tool="justify" aria-label="Justifier">▤</button>
+            <button type="button" data-tool="red" aria-label="Couleur rouge"><span class="color-dot coral-dot"></span>A</button>
+          </div>
+          <div class="writer-page repair-page">
+            <h3 id="repairTitle" data-repair-part="title" tabindex="0">Le volcan mystérieux</h3>
+            <p id="repairParagraph" data-repair-part="paragraph" tabindex="0">Un volcan est une ouverture de la croûte terrestre. La <span id="repairWord" data-repair-part="word" tabindex="0">lave</span> peut s’écouler sur ses pentes et se refroidir.</p>
+          </div>
+        </div>
+        <aside class="checklist-card"><p class="eyebrow">CONTRÔLE QUALITÉ</p><h2>6 réglages</h2><ul id="repairChecklist"></ul></aside>
+      </div>
+      <div class="feedback" id="repairFeedback" aria-live="polite">Commence par cliquer sur un élément du document.</div>
+      <div class="inline-actions"><button class="secondary-button" data-retry="challenge5" type="button">↻ Recommencer l’étape</button><button class="primary-button" id="repairValidate" type="button">Contrôler le document</button></div>
+      <div class="screen-actions"><button class="secondary-button" data-action="previous" type="button">← Retour</button><button class="primary-button" id="repairNext" type="button" disabled>Défi suivant →</button></div>
+    </section>
+
+    <!-- Défi 6 : raccourcis -->
+    <section class="screen challenge-screen" id="challenge6" data-screen="challenge6" aria-labelledby="challenge6Title">
+      <div class="challenge-heading">
+        <div><p class="eyebrow">DÉFI 06 · CLAVIER</p><h1 id="challenge6Title">Raccourcis de secours</h1></div>
+        <button class="hint-button" type="button" data-help="shortcuts">💡 Fiche tuto</button>
+      </div>
+      <div class="instruction-card"><span class="instruction-number">6</span><div><p class="instruction-label">ACTIVE LE BON RACCOURCI</p><p>Choisis la combinaison qui résout la situation.</p></div></div>
+      <div class="shortcut-arena">
+        <div class="shortcut-scene"><span id="shortcutIcon" aria-hidden="true">🆘</span><p id="shortcutContext">Tu veux sélectionner tout le document.</p></div>
+        <div class="key-grid" id="shortcutAnswers">
+          <button type="button" data-shortcut="a"><kbd>Ctrl</kbd> + <kbd>A</kbd><small>Tout sélectionner</small></button>
+          <button type="button" data-shortcut="c"><kbd>Ctrl</kbd> + <kbd>C</kbd><small>Copier</small></button>
+          <button type="button" data-shortcut="v"><kbd>Ctrl</kbd> + <kbd>V</kbd><small>Coller</small></button>
+          <button type="button" data-shortcut="z"><kbd>Ctrl</kbd> + <kbd>Z</kbd><small>Annuler</small></button>
+          <button type="button" data-shortcut="s"><kbd>Ctrl</kbd> + <kbd>S</kbd><small>Enregistrer</small></button>
+        </div>
+      </div>
+      <div class="feedback" id="shortcutFeedback" aria-live="polite">A comme « all » (tout), C comme copier, V pour coller, Z pour revenir en arrière, S pour sauvegarder.</div>
+      <div class="inline-actions"><button class="secondary-button" data-retry="challenge6" type="button">↻ Recommencer l’étape</button></div>
+      <div class="screen-actions"><button class="secondary-button" data-action="previous" type="button">← Retour</button><button class="primary-button" id="shortcutNext" type="button" disabled>Défi final →</button></div>
+    </section>
+
+    <!-- Défi 7 : synthèse finale -->
+    <section class="screen challenge-screen wide-challenge" id="challenge7" data-screen="challenge7" aria-labelledby="challenge7Title">
+      <div class="challenge-heading">
+        <div><p class="eyebrow">DÉFI 07 · MISSION FINALE</p><h1 id="challenge7Title">Reproduis le modèle</h1></div>
+        <button class="hint-button" type="button" data-help="final">💡 Fiche méthode</button>
+      </div>
+      <div class="final-editor-grid">
+        <aside class="model-document">
+          <div class="model-ribbon">MODÈLE</div>
+          <h2>Les océans</h2>
+          <p>Les océans couvrent une grande partie de notre planète. Ils abritent une biodiversité <span>fragile</span> qu’il faut protéger.</p>
+          <ul><li>Titre : Liberation Sans, 20 pt, gras, centré, bleu</li><li>Paragraphe : Liberation Serif, 12 pt, justifié</li><li>Mot « fragile » : italique et rouge</li></ul>
+        </aside>
+        <div class="writer-shell final-editor">
+          <div class="writer-titlebar"><span>📄 Ocean.odt — LibreOffice Writer</span><span>— □ ×</span></div>
+          <div class="full-toolbar" id="finalToolbar">
+            <select data-final-tool="font" aria-label="Police"><option>Liberation Sans</option><option>Liberation Serif</option><option>Carlito</option></select>
+            <select data-final-tool="size" aria-label="Taille"><option>12</option><option>16</option><option>20</option></select>
+            <button type="button" data-final-tool="bold" aria-label="Gras"><strong>G</strong></button>
+            <button type="button" data-final-tool="italic" aria-label="Italique"><em>I</em></button>
+            <select data-final-tool="color" aria-label="Couleur"><option value="ink">Noir</option><option value="blue">Bleu</option><option value="coral">Rouge</option></select>
+            <button type="button" data-final-tool="left" aria-label="Aligner à gauche">☰</button>
+            <button type="button" data-final-tool="center" aria-label="Centrer">☰</button>
+            <button type="button" data-final-tool="justify" aria-label="Justifier">▤</button>
+          </div>
+          <div class="writer-page final-page">
+            <h3 id="finalDocTitle" data-final-part="title" tabindex="0">Les océans</h3>
+            <p id="finalDocParagraph" data-final-part="paragraph" tabindex="0">Les océans couvrent une grande partie de notre planète. Ils abritent une biodiversité <span id="finalDocWord" data-final-part="word" tabindex="0">fragile</span> qu’il faut protéger.</p>
+          </div>
+        </div>
+      </div>
+      <div class="final-criteria" id="finalCriteria"></div>
+      <div class="feedback" id="finalFeedback" aria-live="polite">Sélectionne une zone dans ton document, puis applique les réglages du modèle.</div>
+      <div class="inline-actions"><button class="secondary-button" data-retry="challenge7" type="button">↻ Recommencer l’étape</button><button class="primary-button" id="finalValidate" type="button">Valider par critères</button></div>
+      <div class="screen-actions"><button class="secondary-button" data-action="previous" type="button">← Retour</button><button class="primary-button" id="toBonus" type="button" disabled>Continuer →</button></div>
+    </section>
+
+    <!-- Bonus facultatif -->
+    <section class="screen challenge-screen" id="bonus" data-screen="bonus" aria-labelledby="bonusTitle">
+      <div class="challenge-heading">
+        <div><p class="eyebrow">BONUS FACULTATIF · CHRONO</p><h1 id="bonusTitle">Le sprint du typographe</h1></div>
+        <div class="timer-badge" id="timerBadge">⏱ 45 s</div>
+      </div>
+      <div class="bonus-intro" id="bonusIntro">
+        <div class="bonus-symbol" aria-hidden="true">⚡</div>
+        <h2>6 questions rapides en 45 secondes</h2>
+        <p>Ce bonus peut ajouter jusqu’à 400 points. Il ne retire aucun point et ne bloque jamais le bilan.</p>
+        <button class="primary-button" id="bonusStart" type="button">Lancer le chrono</button>
+      </div>
+      <div class="quiz-arena purple-quiz" id="bonusArena" hidden>
+        <div class="quiz-top"><span class="round-pill">SPRINT</span><span id="bonusCount">Question 1 / 6</span></div>
+        <h2 id="bonusQuestion"></h2>
+        <div class="answer-grid" id="bonusAnswers"></div>
+      </div>
+      <div class="feedback" id="bonusFeedback" aria-live="polite">Tu peux passer directement au bilan si tu préfères.</div>
+      <div class="screen-actions"><button class="secondary-button" id="skipBonus" type="button">Passer le bonus</button><button class="primary-button" id="finishButton" type="button">Voir mon bilan →</button></div>
+    </section>
+
+    <!-- Bilan détaillé écran + impression -->
+    <section class="screen final-screen" id="final" data-screen="final" aria-labelledby="finalTitle">
+      <div class="confetti" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="print-only report-print-header">
+        <p>TICE 6e — Séance 6</p><h1>Writer : laboratoire du texte</h1>
+      </div>
+      <p class="eyebrow screen-only">MISSION ACCOMPLIE</p>
+      <h1 class="screen-only" id="finalTitle">Ton rapport est prêt&nbsp;!</h1>
+      <p class="final-intro screen-only" id="finalMessage">Pixel valide ton passage dans le laboratoire du texte.</p>
+
+      <div class="student-identity" aria-label="Informations de l’élève">
+        <label>Nom <input id="reportLastName" type="text" placeholder="À compléter"></label>
+        <label>Prénom <input id="reportFirstName" type="text" placeholder="À compléter"></label>
+        <label>Classe <input id="reportClass" type="text" placeholder="6e …"></label>
+        <p>Date <strong id="reportDate"></strong></p>
+      </div>
+
+      <div class="summary-metrics">
+        <article class="score-card">
+          <p>RÉSULTAT GLOBAL</p>
+          <strong><span id="finalScore">0</span><small id="maxScoreLabel"> / 7000</small></strong>
+          <div class="overall-percent"><strong id="finalPercent">0 %</strong><span>de réussite</span></div>
+          <div class="star-row" id="starRow" aria-label="Niveau atteint">☆ ☆ ☆</div>
+          <span class="rank-badge" id="rankBadge">Apprenti du texte</span>
+        </article>
+        <article class="metric-card"><span>⏱</span><div><small>Temps indicatif</small><strong id="timeSpent">—</strong></div></article>
+        <article class="metric-card"><span>↻</span><div><small>Tentatives</small><strong id="attemptsTotal">0</strong></div></article>
+        <article class="metric-card"><span>💡</span><div><small>Aides utilisées</small><strong id="helpsTotal">0</strong></div></article>
+      </div>
+
+      <section class="result-details" aria-labelledby="detailsTitle">
+        <div class="details-heading"><div><p class="eyebrow">DÉTAIL DU PARCOURS</p><h2 id="detailsTitle">Mes résultats par compétence</h2></div><p><strong id="validatedCount">0</strong> compétence(s) validée(s)</p></div>
+        <div class="report-table-wrap">
+          <table class="report-table">
+            <thead><tr><th>Compétence</th><th>Ce que j’ai travaillé</th><th>Réussite</th><th>Essais / aides</th><th>Statut</th></tr></thead>
+            <tbody id="reportTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="report-columns">
+        <section class="learning-summary" aria-labelledby="validatedTitle">
+          <h2 id="validatedTitle">Compétences validées</h2>
+          <ul class="check-list" id="validatedSkills"></ul>
+        </section>
+        <section class="learning-summary advice-panel" aria-labelledby="adviceTitle">
+          <h2 id="adviceTitle">Mes conseils personnalisés</h2>
+          <ul id="adviceList"></ul>
+        </section>
+      </div>
+
+      <section class="now-know" aria-labelledby="knowTitle">
+        <h2 id="knowTitle">Je sais maintenant…</h2>
+        <div id="knowList"></div>
+      </section>
+      <section class="teacher-zone">
+        <h2>Validation professeur</h2>
+        <p>☐ Acquis　 ☐ En cours d’acquisition　 ☐ À retravailler</p>
+        <div class="teacher-lines"><span>Observation :</span><i></i><span>Signature :</span><i></i></div>
+      </section>
+      <p class="report-note">Une erreur corrigée fait partie de l’apprentissage. Ce bilan sert à choisir ce qu’il faut encore entraîner.</p>
+      <div class="final-actions screen-only"><button class="secondary-button" id="restartButton" type="button">↻ Nouvelle mission</button><button class="primary-button" id="printButton" type="button">Aperçu / Imprimer le bilan</button></div>
+    </section>
+  </main>
+
+  <footer class="site-signature">Tice - Technologie - Vincent Belhaire</footer>
+
+  <dialog class="help-dialog" id="helpDialog" aria-labelledby="helpTitle">
+    <div class="dialog-top"><span class="help-icon">💡</span><button type="button" id="closeHelp" aria-label="Fermer l’aide">×</button></div>
+    <p class="eyebrow">FICHE TUTO</p>
+    <h2 id="helpTitle">Besoin d’un coup de pouce&nbsp;?</h2>
+    <div id="helpContent"></div>
+    <button class="primary-button" id="gotItButton" type="button">J’ai compris !</button>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <script src="script.js"></script>
+</body>
+</html>
