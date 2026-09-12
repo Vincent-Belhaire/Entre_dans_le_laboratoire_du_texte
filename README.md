@@ -9,6 +9,7 @@ Mini-site autonome en HTML, CSS et JavaScript pour une séance de 55 minutes en 
 - 7 défis progressifs et un bonus chronométré facultatif ;
 - réponses des questionnaires mélangées à chaque nouvelle situation ;
 - fausse interface LibreOffice Writer manipulable à la souris et au clavier ;
+- sélection fidèle à Writer : clic simple pour le curseur, double-clic pour un mot, triple-clic pour une phrase, glisser-sélectionner et Ctrl+A ;
 - aides intégrées sans quitter les défis ;
 - score, feedback immédiat, badges et possibilité de recommencer une étape ;
 - sauvegarde locale de la progression avec `localStorage` ;

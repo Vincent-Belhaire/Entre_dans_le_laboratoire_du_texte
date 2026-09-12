@@ -51,6 +51,7 @@
   let isSelecting = false;
   let selectionAnchor = 0;
   let selectionDragged = false;
+  let ignoreSelectionClickUntil = 0;
   let selectedTokenIndexes = new Set();
   let styleRound = 0;
   let appearanceRound = 0;
@@ -245,7 +246,7 @@
     },
     selection: {
       title: "Sélectionner sans se tromper",
-      html: "<ol><li>Un <strong>clic</strong> sur un mot le sélectionne dans cet entraînement.</li><li>Pour une phrase, maintiens le bouton de la souris et <strong>glisse</strong> du premier au dernier mot.</li><li>Le texte sélectionné apparaît sur fond bleu.</li><li><kbd>Ctrl</kbd> + <kbd>A</kbd> sélectionne tout le document.</li></ol><p>Le trait vertical qui clignote est le <strong>curseur</strong> : il indique où le texte sera écrit. Ce n’est pas une sélection.</p>"
+      html: "<ol><li>Un <strong>clic simple</strong> place seulement le curseur : aucun texte n’est sélectionné.</li><li>Un <strong>double-clic</strong> sélectionne un mot entier.</li><li>Un <strong>triple-clic</strong> sélectionne une phrase entière.</li><li>Pour choisir une portion précise, maintiens le bouton de la souris et <strong>glisse</strong> du premier au dernier mot.</li><li><kbd>Ctrl</kbd> + <kbd>A</kbd> sélectionne tout le document.</li></ol><p>Le texte sélectionné apparaît sur fond bleu. Le trait vertical qui clignote est le <strong>curseur</strong> : il indique où le texte sera écrit, mais ce n’est pas une sélection.</p>"
     },
     styles: {
       title: "Gras, italique, souligné",
@@ -284,8 +285,8 @@
 
   /* ---------- Défi 1 : sélection ---------- */
   const selectionTasks = [
-    { words: ["Pixel", "observe", "le", "texte", "mystérieux", "dans", "Writer."], expected: [3], prompt: "Sélectionne seulement le mot « texte »." },
-    { words: ["Le", "titre", "annonce", "clairement", "le", "sujet", "du", "document."], expected: [0, 1, 2, 3], prompt: "Sélectionne la phrase « Le titre annonce clairement »." },
+    { words: ["Pixel", "observe", "le", "texte", "mystérieux", "dans", "Writer."], expected: [3], prompt: "Sélectionne seulement le mot « texte » avec un double-clic (ou un glissement précis)." },
+    { words: ["Le", "titre", "annonce", "clairement.", "Le", "paragraphe", "développe", "le", "sujet."], sentences: [0, 0, 0, 0, 1, 1, 1, 1, 1], expected: [0, 1, 2, 3], prompt: "Sélectionne la phrase « Le titre annonce clairement. » avec un triple-clic (ou par glissement)." },
     { words: ["Writer", "permet", "de", "mettre", "en", "forme", "un", "document", "complet."], expected: "all", prompt: "Sélectionne tout le texte avec Ctrl+A (ou en glissant sur tous les mots)." }
   ];
 
@@ -293,10 +294,15 @@
     const task = selectionTasks[selectionRound];
     selectedTokenIndexes.clear();
     $("#selectionStep").textContent = String(selectionRound + 1);
-    $("#selectionLabel").textContent = selectionRound === 2 ? "MANCHE 3 · RACCOURCI" : `MANCHE ${selectionRound + 1} · CLIQUE OU GLISSE`;
+    $("#selectionLabel").textContent = ["MANCHE 1 · DOUBLE-CLIC OU GLISSE", "MANCHE 2 · TRIPLE-CLIC OU GLISSE", "MANCHE 3 · RACCOURCI OU GLISSE"][selectionRound];
     $("#selectionPrompt").textContent = task.prompt;
-    $("#selectionText").innerHTML = task.words.map((word, index) => `<span class="word-token" data-token="${index}">${word}</span>${index < task.words.length - 1 ? " " : ""}`).join("");
-    setFeedback("#selectionFeedback", selectionRound === 2 ? "Clique dans la feuille puis appuie sur Ctrl+A." : "Le fond bleu montre exactement ce qui est sélectionné.");
+    $("#selectionText").innerHTML = task.words.map((word, index) => `<span class="word-token" data-token="${index}" data-sentence="${task.sentences?.[index] ?? 0}">${word}</span>${index < task.words.length - 1 ? " " : ""}`).join("");
+    const guidance = [
+      "Un clic simple place seulement le curseur. Double-clique sur le mot ou glisse précisément dessus.",
+      "Triple-clique dans la première phrase ou glisse de son premier à son dernier mot.",
+      "Clique dans la feuille puis appuie sur Ctrl+A, ou glisse sur tout le texte."
+    ];
+    setFeedback("#selectionFeedback", guidance[selectionRound]);
   }
 
   function updateSelectionTokens() {
@@ -311,6 +317,21 @@
     const start = Math.min(from, to);
     const end = Math.max(from, to);
     for (let i = start; i <= end; i += 1) selectedTokenIndexes.add(i);
+    updateSelectionTokens();
+  }
+
+  function placeSelectionCursor(index) {
+    selectedTokenIndexes.clear();
+    updateSelectionTokens();
+    const token = $(`.word-token[data-token="${index}"]`, $("#selectionText"));
+    token?.classList.add("cursor");
+  }
+
+  function selectSentence(sentenceIndex) {
+    selectedTokenIndexes.clear();
+    $$(".word-token", $("#selectionText")).forEach((token, index) => {
+      if (Number(token.dataset.sentence) === sentenceIndex) selectedTokenIndexes.add(index);
+    });
     updateSelectionTokens();
   }
 
@@ -915,7 +936,7 @@
     isSelecting = true;
     selectionDragged = false;
     selectionAnchor = Number(token.dataset.token);
-    selectTokenRange(selectionAnchor, selectionAnchor);
+    placeSelectionCursor(selectionAnchor);
     $("#selectionLab").focus();
   });
   $("#selectionText").addEventListener("pointerover", event => {
@@ -925,7 +946,27 @@
     selectionDragged = selectionDragged || index !== selectionAnchor;
     selectTokenRange(selectionAnchor, index);
   });
-  document.addEventListener("pointerup", () => { isSelecting = false; });
+  document.addEventListener("pointerup", () => {
+    if (selectionDragged) ignoreSelectionClickUntil = Date.now() + 200;
+    isSelecting = false;
+    selectionDragged = false;
+  });
+  $("#selectionText").addEventListener("click", event => {
+    const token = event.target.closest("[data-token]");
+    if (!token || Date.now() < ignoreSelectionClickUntil) return;
+    const tokenIndex = Number(token.dataset.token);
+
+    if (event.detail >= 3) {
+      selectSentence(Number(token.dataset.sentence));
+      setFeedback("#selectionFeedback", "Triple-clic détecté : la phrase entière est sélectionnée.", "success");
+    } else if (event.detail === 2) {
+      selectTokenRange(tokenIndex, tokenIndex);
+      setFeedback("#selectionFeedback", "Double-clic détecté : le mot entier est sélectionné.", "success");
+    } else {
+      placeSelectionCursor(tokenIndex);
+      setFeedback("#selectionFeedback", "Clic simple : le curseur est placé, mais aucun texte n’est sélectionné.", "info");
+    }
+  });
   $("#selectionLab").addEventListener("keydown", event => {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "a") {
       event.preventDefault();
